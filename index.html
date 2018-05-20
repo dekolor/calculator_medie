@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>calculator</title>
+		<title>Calculator medie</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -14,17 +14,17 @@
 			  <div class="card-body">
 			    <h2>Calculator medie</h2>
 			    <hr>
-			    <form action="calculeaza.php" method="post">
 			    	<div id="inputs">
-			    		<input type="text" class="form-control" name="teza" placeholder="Teza (optional)"><br>
+			    		<input id="teza" type="text" class="form-control" name="teza" placeholder="Teza (optional)"><br>
 				    	<input id="nota" type="text" class="form-control" name="nota_1" placeholder="Nota 1"><br>
 				    	<input id="nota" type="text" class="form-control" name="nota_2" placeholder="Nota 2"><br>
 				    </div>
 			    	<ul class="list-inline">
-			    		<li class="list-inline-item"><a class="btn btn-primary" href="#" id="add">Adauga nota</a></li>
-			    		<li class="list-inline-item"><input type="submit" class="btn btn-info" value="Calculeaza"></li>
+			    		<li class="list-inline-item"><button class="btn btn-primary" id="add">Adauga nota</button></li>
+			    		<li class="list-inline-item"><button id="submit" class="btn btn-info">Calculeaza</button></li>
 			    	</ul>
-			    </form>
+			    	<div id="medie">
+			    	</div>
 			  </div>
 			</div>
 		</div>
