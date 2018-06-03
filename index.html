@@ -1,32 +1,136 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Calculator medie</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<script src="custom.js"></script>
-	</head>
+    <head>
+        <title>Calculator medie</title>
 
-	<body>
-		<div class="container"><br><br><br>
-			<div class="card">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+    </head>
+
+    <body> 
+        <div class="container" id="app">
+            <link rel="stylesheet" v-bind:href="css">
+            <br>
+            <div class="card">
 			  <div class="card-body">
 			    <h2>Calculator medie</h2>
 			    <hr>
 			    	<div id="inputs">
-			    		<input id="teza" type="text" class="form-control" name="teza" placeholder="Teza (optional)"><br>
-				    	<input id="nota" type="text" class="form-control" name="nota_1" placeholder="Nota 1"><br>
-				    	<input id="nota" type="text" class="form-control" name="nota_2" placeholder="Nota 2"><br>
+                        <input v-bind:class="inputStyle" v-bind:style="customInputStyle" v-model="teza" type="text" class="form-control" placeholder="Teza (optional)"><br>
+                        <div v-for="(item, index) in nota">
+                        <input v-bind:class="inputStyle" v-bind:style="customInputStyle" v-model="item.nota" type="text" class="form-control" v-bind:placeholder="'Nota ' + index"><br>
+                        </div>
+                        <div v-html="nota_noua"></div>
 				    </div>
 			    	<ul class="list-inline">
-			    		<li class="list-inline-item"><button class="btn btn-primary" id="add">Adauga nota</button></li>
-			    		<li class="list-inline-item"><button id="submit" class="btn btn-info">Calculeaza</button></li>
+			    		<li class="list-inline-item"><button class="btn btn-primary" v-on:click="adaugaNota">Adauga nota</button></li>
+                        <li class="list-inline-item"><button class="btn btn-info" v-on:click="calculeazaMedia">Calculeaza</button></li>
+                        <li class="list-inline-item"><button class="btn btn-black" v-if="renderDarkModeButton" v-on:click="darkMode">Dark mode</button></li>
 			    	</ul>
-			    	<div id="medie">
+			    	<div v-html="medieFinala">
 			    	</div>
 			  </div>
 			</div>
-		</div>
-	</body>
+        </div>
+
+
+        <script>
+            var ultimaNota;
+            var suma;
+            var media;
+            var i;
+            var cookies;
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    renderDarkModeButton: true,
+                    darkmodestatus: 0,
+                    css: "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
+                    inputStyle: null,
+                    customInputStyle: null,
+                    teza: null,
+                    nota_noua: null,
+                    medieFinala: null,
+                    nota: [
+                        {'nota': null},
+                        {'nota': null}
+                    ]
+                },
+                methods: {
+                    adaugaNota: function() {
+                        this.nota.push({nota: ''})
+                    },
+                    calculeazaMedia: function() {
+                        suma = 0;
+                        media = 0;
+                        if(this.teza !== null) {
+                            for (i = 0; i < this.nota.length; i++) {
+                                suma = suma + Number(this.nota[i].nota);
+                            }
+                            media = suma/this.nota.length;
+                            media = media * 3;
+                            media = media + Number(this.teza);
+                            media = media / 4;
+                        }
+                        else {
+                            for(i = 0; i< this.nota.length; i++) {
+                                suma = suma + Number(this.nota[i].nota);
+                            }
+                            media = suma/this.nota.length;
+                            media = media
+                        }
+                        this.medieFinala = "Medie: <b>" + media.toFixed(2) + "</b>";
+                    },
+                    darkMode: function() {
+                        this.renderDarkModeButton = false;
+                        this.css = "https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/darkly/bootstrap.min.css";
+                        this.inputStyle = "bg-primary";
+                        this.customInputStyle = "color:white;";
+                        this.setDarkMode();
+                    },
+                    getDarkModeCookie: function() {
+                        cookies = document.cookie;
+                        cookies = cookies.split(";");
+                        for(key in cookies) {
+                            string = cookies[key];
+                            if(string.startsWith("dark_mode")){
+                                darkmodestatus = cookies[key].split("=");
+                                this.darkmodestatus = Number(darkmodestatus[1]);
+                                this.renderDarkModeButton = false;
+                                this.css = "https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/darkly/bootstrap.min.css";
+                                this.inputStyle = "bg-primary";
+                                this.customInputStyle = "color:white;";
+                            }
+                            else {
+                                this.darkmodestatus = 0;
+                            }
+                        }
+                    },
+                    setDarkMode: function() {
+                        document.cookie = "dark_mode=1";
+                        this.darkmodestatus = 1;
+                    }
+                },
+                watch: {
+                    nota: {
+                        handler: function () {
+                            this.calculeazaMedia();
+                        },
+                        deep: true
+                    },
+                    teza: function(val) {
+                        if(val === "") {
+                            this.teza = null;
+                        }
+                        this.calculeazaMedia();
+                    }
+                },
+                created: function() {
+                    this.getDarkModeCookie();
+                }
+            })
+        </script>
+    </body>
 </html>
